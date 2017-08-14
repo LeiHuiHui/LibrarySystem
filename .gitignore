@@ -1,0 +1,18 @@
+# Created by .ignore support plugin (hsz.mobi)
+将删除 .gitignore
+将删除 .idea/
+将删除 Library/__init__.py
+将删除 Library/__pycache__/
+将删除 Library/admin.py
+将删除 Library/apps.py
+将删除 Library/migrations/
+将删除 Library/models.py
+将删除 Library/tests.py
+将删除 Library/views.py
+将删除 LibrarySystem/
+将删除 db.sqlite3
+将删除 manage.py
+将删除 readme.txt
+将删除 templates/
+将删除 Library/migrations/__pycache__/
+将删除 LibrarySystem/__pycache__/
