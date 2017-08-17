@@ -21,7 +21,8 @@ admin.autodiscover()
 
 urlpatterns = [
 
-    url(r'^', include('Library.urls', namespace='Library')),
+    url(r'', include('Library.urls', namespace='Library')),
+    url(r'', include('django.contrib.auth.urls')),
     url(r'^admin/', include(admin.site.urls)),
 ]
 

@@ -4,9 +4,10 @@ from . import views
 
 
 admin.autodiscover()
-
+app_name = 'Library'
 urlpatterns = [
-    url(r'^$', views.HomePage, name='HomePage'),
-    url(r'^submit/$', views.Submit, name='Submit'),
-    url(r'^showlist/$', views.ShowList, name='ShowList'),
+    url(r'^register/', views.register, name='register'),
+    url(r'^$', views.index, name='index'),
+    url(r'^submit/', views.submit, name='submit'),
+    #  url(r'^showlist/$', views.showList, name='ShowList'),
 ]
