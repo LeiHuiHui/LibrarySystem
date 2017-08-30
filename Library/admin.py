@@ -10,7 +10,7 @@ class UserAdmin(admin.ModelAdmin):
     pass
 
 
-class HeadersInline(admin.TabularInline):
+class HeadersInline(admin.StackedInline):
     model = InitialHeaders
     extra = 3
 
@@ -22,7 +22,7 @@ class ExcelAdmin(admin.ModelAdmin):
     inlines = [HeadersInline]
 
     def save_model(self, request, obj, form, change):
-        # 从内联表InitialHeaders中整合表头信息，以header_name,header_type,的形式存储
+        # 从内联表InitialHeaders中整合表头信息，以header_name,header_type,...的形式存储
         obj.save()
         header_set = obj.header_set.all()  # 反向关联
         headers = ""

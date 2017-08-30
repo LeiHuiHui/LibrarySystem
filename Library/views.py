@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect
-from django.views.decorators.csrf import csrf_exempt
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect
+
 from Library.models import *
 from .forms import RegisterForm
 
@@ -39,8 +40,48 @@ def register(request):
 
 
 def index(request):
-    return render(request, 'Library/index.html')
+    excel_list = Excel.objects.all()
+    return render(request, 'Library/index.html', context={'excel_list': excel_list})
+
+
+def fill(request, excel_id):
+    #  要从InitialHeaders表中，查找当前Excel对象的表头。事实上这一步已经在admin.py中ExcelAdmin重写的save_model()中做好了
+    #  表头及其格式以header_name,header_type,...的字符串形式存储在Excel.excel_headers中，方便存储在数据库中
+    #  现需要将headers转换成字典{'header_name':'header_type',...}，方便程序取用
+    obj = Excel.objects.get(id=excel_id)
+    header_list = obj.excel_headers.split(',')
+    header_name = header_list[0::2]
+    header_type = header_list[1::2]
+    headers = {}
+    for h in header_name:
+        headers[h] = header_type[header_name.index(h)]
+    if request.method == 'POST':
+        request_data = ""
+        for h in header_name:
+            data = request.POST.get(h)
+            request_data += h+','+str(data) + ','
+        request_data = request_data[:len(request_data)-1]
+        try:
+            Fill.objects.create(user=request.user, excel=obj, fill_data=request_data)
+            return HttpResponseRedirect(reverse('Library:submit'))
+        except:
+            raise Fill.DoesNotExist
+        '''fill_obj = Fill.objects.create(user=request.user, excel=obj, fill_data=request_data)
+        return redirect(reverse('Library:submit'))'''
+    else:
+        fill_obj = Fill.objects.get(user=request.user, excel=obj)
+        if fill_obj:
+            fill_data = fill_obj.fill_data.split(',')
+            value_set = {}
+            for i in range(len(fill_data)-1):
+                if i % 2 == 0:
+                    value_set[fill_data[i]] = fill_data[i+1]
+            return render(request, 'Library/fill.html',
+                          context={'obj': obj, 'headers': headers, 'value_set': value_set})
+        else:
+            return render(request, 'Library/fill.html',
+                          context={'obj': obj, 'headers': headers, 'value_set': 0})
 
 
 def submit(request):
-    pass
+    return HttpResponse("提交成功！")
